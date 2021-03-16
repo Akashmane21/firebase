@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase_Crud</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-firestore.js"></script>
+</head>
+<body>
+    Name : <input type="text" , type="NameTbox" , oninput="Update(this.value,'name')"> <br><br>
+    RollNo : <input type="text" , type="RollTbox" , oninput="Update(this.value,'roll')"><br><br>
+
+    Section : <input type="text" , type="SecTbox" , oninput="Update(this.value,'sec')"><br><br>
+    Gender : <input type="text" , type="GenTbox" , oninput="Update(this.value,'gen')"><br><br>
+<hr>
+
+
+
+
+<button id="insertBtn">Insert</button>
+<button id="selectBtn">Select</button>
+<button id="updateBtn">Update</button>
+<button id="deleteBtn">Delete</button>
+
+
+
+
+<script id="MainScript">
+    let NameT= document.getElementById('NameTbox')
+    let RollT= document.getElementById('RollTbox')
+    let SecT= document.getElementById('SecTbox')
+    let GenT= document.getElementById('GenTbox')
+
+
+
+    let nameV,rollV,secV,genV;
+
+    function Update(val , type){
+        if(type=='name') nameV=val;
+        else if(type=='roll') rollV=val;
+        else if(type=='sec') secV=val;
+        else if(type=='gen') genV=val;
+    }
+
+
+
+    //-------------------------Config-------------------------------------------------------------------------------
+    
+    const firebaseConfig = {
+  apiKey: "AIzaSyB62a6-yDppHs6GaWD-YnM9ncKs0sPjhro",
+  authDomain: "crud-59edd.firebaseapp.com",
+  projectId: "crud-59edd",
+  storageBucket: "crud-59edd.appspot.com",
+  messagingSenderId: "742848595516",
+  appId: "1:742848595516:web:464418ce59261e90632539"
+};
+
+
+        firebase.initializeApp(firebaseConfig);
+        let cloudDB = firebase.firestore();
+
+// ------------Writing FUnction ------------------------------------------------------------------------------
+
+    function Add_Doc_WithAutoID(){
+        console.log("Submitting....");
+        cloudDB.collection("Students").add(
+            {
+                NameofStd : nameV,
+                Rollno :Number(rollV),
+                Section :secV,
+                Gender :genV,
+
+            }
+        )
+
+        .then(function ( docRef){
+            console.log("Document Written with ID", docRef.id);
+        })
+
+        .cathch(function(error){
+            console.log(error);
+        })
+    }
+
+    function Add_Doc_WithID(){
+        console.log("Submitting....");
+        cloudDB.collection("Students").doc(rollV).set(
+            {
+                NameofStd : nameV,
+                Rollno :Number(rollV),
+                Section :secV,
+                Gender :genV,
+
+            }
+        )
+
+        .then(function ( ){
+            console.log("Document Written with ID",rollV);
+        })
+
+        .cathch(function(error){
+            console.log(error);
+        })
+    }
+
+
+
+
+
+
+    // -----------------------------------------Update------------------------------------------------------
+    function Update_Doc_WithID(){
+        console.log("Submitting....");
+        cloudDB.collection("Students").doc(rollV).update(
+            {
+                NameofStd : nameV,
+                Section :secV,
+                Gender :genV,
+
+            }
+        )
+
+        .then(function ( ){
+            console.log("Document Written with ID",rollV);
+        })
+
+        .cathch(function(error){
+            console.log(error);
+        })
+    }
+
+
+    // -------------------------------------------Delete---------------------------------------------------
+    function Del_Doc_WithID(){
+        console.log("Submitting....");
+        cloudDB.collection("Students").doc(rollV).delete(  )
+
+        .then(function ( ){
+            console.log("Document Written with ID",rollV);
+        })
+
+        .cathch(function(error){
+            console.log(error);
+        })
+    }
+ // -------------------------------------------Select---------------------------------------------------
+ function Retrive_Doc_WithID(){
+        console.log("Submitting....");
+        cloudDB.collection("Students").get(  )
+
+        .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+        // .then(function (doc){
+        //    if(doc.exists){
+        //        console.log(doc.data());
+        //    }
+        // })
+
+        // .cathch(function(error){
+        //     console.log(error);
+        // })
+    }
+// ---------------------Btn Events-------------------------------------------------------------------------------
+
+document.getElementById('insertBtn').onclick=function(){
+    Add_Doc_WithID()
+}
+
+document.getElementById('selectBtn').onclick=function(){
+    Retrive_Doc_WithID()
+}
+
+document.getElementById('updateBtn').onclick=function(){
+    Update_Doc_WithID()
+}
+
+document.getElementById('deleteBtn').onclick=function(){
+    Del_Doc_WithID()
+}
+
+</script>
+
+
+
+
+
+
+</body>
+</html>
